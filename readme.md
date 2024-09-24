@@ -64,12 +64,10 @@ Esta pasta contém os módulos reutilizáveis para provisionar diferentes compon
 -  **autoscalling/**: Configura o autoscaling para os grupos de nós (nodes) do EKS, permitindo ajuste automático da capacidade de acordo com a demanda.
 -  **eks-cluster/**: Provisiona o cluster EKS (Elastic Kubernetes Service), incluindo configuração do plano de controle e integração com o IAM.
 -  **java-app/**: Define o deployment, serviço e configuração do aplicativo Java que será executado no cluster Kubernetes.
--  **mysql/**: Provisiona o deployment e o serviço para o banco de dados MySQL, juntamente com o volume persistente necessário.
 -  **namespaces/**: Módulo responsável por criar e gerenciar namespaces no cluster Kubernetes, proporcionando isolamento para diferentes ambientes e serviços.
 -  **nodes/**: Gerencia os nós de trabalho (worker nodes) do cluster EKS, incluindo a configuração de grupos de nós e roles do IAM.
 -  **pdb/**: Implementa as políticas de interrupção de pods (Pod Disruption Budget), garantindo disponibilidade mínima das aplicações durante eventos de escalabilidade ou manutenção.
 -  **replicaset/**: Configura os ReplicaSets para garantir que um número definido de réplicas de pods esteja sempre disponível.
--  **storage/**: Provisiona volumes persistentes (Persistent Volumes) e claims para o armazenamento dos dados persistentes das aplicações, como o MySQL.
 
 ### Arquivos na raiz
 
