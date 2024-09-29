@@ -163,6 +163,10 @@ module "java_app_replicaset" {
     "SPRING_DATASOURCE_USERNAME" = {
       name  = "SPRING_DATASOURCE_USERNAME"
       value = "admin"
+    },
+    "AUTH_URL" = {
+      name  = "AUTH_URL"
+      value = "https://jw1v21uqkj.execute-api.us-east-1.amazonaws.com/v1/autenticar-python"
     }
   }
   resource_limits_cpu      = "1"
