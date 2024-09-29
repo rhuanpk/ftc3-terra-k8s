@@ -97,7 +97,7 @@ module "java_app_deployment" {
   labels_app     = "java-app"
   replicas       = 1
   container_name = "java-app"
-  image          = "filipeborba/fast-food-app:v7"
+  image          = "brunocampossousa/ftc3-app:latest"
   container_port = 8080
   env_vars = {
     "SPRING_DATASOURCE_PASSWORD" = {
@@ -111,6 +111,10 @@ module "java_app_deployment" {
     "SPRING_DATASOURCE_USERNAME" = {
       name  = "SPRING_DATASOURCE_USERNAME"
       value = "admin"
+    },
+    "AUTH_URL" = {
+      name  = "AUTH_URL"
+      value = "https://jw1v21uqkj.execute-api.us-east-1.amazonaws.com/v1/autenticar-python"
     }
   }
   resource_limits_cpu      = "1"
@@ -149,7 +153,7 @@ module "java_app_replicaset" {
   source         = "./modules/replicaset"
   namespace      = "java-app"
   replicas       = 2
-  image          = "filipeborba/fast-food-app:v7"
+  image          = "brunocampossousa/ftc3-app:latest"
   container_port = 8080
   env_vars = {
     "SPRING_DATASOURCE_PASSWORD" = {
@@ -158,7 +162,7 @@ module "java_app_replicaset" {
     },
     "SPRING_DATASOURCE_URL" = {
       name  = "SPRING_DATASOURCE_URL"
-      value = "jdbc:mysql://mysql.mysql-data.svc.cluster.local:3306/db"
+      value = "jdbc:mysql://mysql-ftc3.cnsgp0m1uiux.us-east-1.rds.amazonaws.com:3306/db"
     },
     "SPRING_DATASOURCE_USERNAME" = {
       name  = "SPRING_DATASOURCE_USERNAME"
