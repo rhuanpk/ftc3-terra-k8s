@@ -55,10 +55,16 @@ resource "aws_subnet" "public_subnets" {
   map_public_ip_on_launch = true
 }
 
+# Obter o ARN da role do cluster EKS usando um data source
+data "aws_iam_role" "lab_role" {
+  name = "LabRole"
+}
+
 module "eks_cluster" {
   source             = "./modules/eks-cluster"
-  cluster_name       = "cluster-ftc2"
-  cluster_role_arn   = "arn:aws:iam::160341253529:role/LabRole"
+  cluster_name       = "cluster-ftc3"
+  cluster_role_arn   = data.aws_iam_role.lab_role.arn
+  # cluster_role_arn   = "arn:aws:iam::438392353047:role/LabRole"
   subnet_ids         = aws_subnet.public_subnets.*.id
   kubernetes_version = "1.24"
 }
@@ -84,60 +90,6 @@ module "namespace" {
   source = "./modules/namespaces"
 }
 
-module "storage" {
-  source                       = "./modules/storage"
-  storage_class_name           = "mysql-storageclass"
-  provisioner                  = "kubernetes.io/aws-ebs"
-  reclaim_policy               = "Delete"
-  allow_volume_expansion       = true
-  volume_binding_mode          = "WaitForFirstConsumer"
-  type                         = "gp2"
-  fs_type                      = "ext4"
-  encrypted                    = "true"
-  persistent_volume_name       = "mysql-data"
-  persistent_volume_claim_name = "mysql-data"
-  namespace                    = "mysql-data"
-  app_label                    = "mysql"
-  storage_capacity             = "512Mi"
-  access_modes                 = ["ReadWriteOnce"]
-  volume_mode                  = "Filesystem"
-  host_path                    = "/mnt/mysql-data"
-}
-
-module "mysql_deployment" {
-  source         = "./modules/mysql"
-  name           = "mysql"
-  namespace      = "mysql-data"
-  labels_app     = "mysql"
-  replicas       = 1
-  container_name = "mysql-db"
-  image          = "mysql:latest"
-  container_port = 3306
-  env_vars = {
-    "MYSQL_DATABASE" = {
-      name  = "MYSQL_DATABASE"
-      value = "db"
-    },
-    "MYSQL_PASSWORD" = {
-      name  = "MYSQL_PASSWORD"
-      value = "admin"
-    },
-    "MYSQL_ROOT_PASSWORD" = {
-      name  = "MYSQL_ROOT_PASSWORD"
-      value = "root"
-    },
-    "MYSQL_USER" = {
-      name  = "MYSQL_USER"
-      value = "admin"
-    }
-  }
-  volume_name                  = "mysql-data"
-  persistent_volume_claim_name = "mysql-data"
-  mount_path                   = "/var/lib/mysql"
-  restart_policy               = "Always"
-  strategy_type                = "Recreate"
-}
-
 module "java_app_deployment" {
   source         = "./modules/java-app"
   name           = "java-app"
@@ -145,20 +97,24 @@ module "java_app_deployment" {
   labels_app     = "java-app"
   replicas       = 1
   container_name = "java-app"
-  image          = "filipeborba/fast-food-app:v7"
+  image          = "brunocampossousa/ftc3-app:latest"
   container_port = 8080
   env_vars = {
     "SPRING_DATASOURCE_PASSWORD" = {
       name  = "SPRING_DATASOURCE_PASSWORD"
-      value = "admin"
+      value = "admin123"
     },
     "SPRING_DATASOURCE_URL" = {
       name  = "SPRING_DATASOURCE_URL"
-      value = "jdbc:mysql://mysql.mysql-data.svc.cluster.local:3306/db"
+      value = "jdbc:mysql://mysql-ftc3.cnsgp0m1uiux.us-east-1.rds.amazonaws.com:3306/db"
     },
     "SPRING_DATASOURCE_USERNAME" = {
       name  = "SPRING_DATASOURCE_USERNAME"
       value = "admin"
+    },
+    "AUTH_URL" = {
+      name  = "AUTH_URL"
+      value = "https://jw1v21uqkj.execute-api.us-east-1.amazonaws.com/v1/autenticar-python"
     }
   }
   resource_limits_cpu      = "1"
@@ -197,7 +153,7 @@ module "java_app_replicaset" {
   source         = "./modules/replicaset"
   namespace      = "java-app"
   replicas       = 2
-  image          = "filipeborba/fast-food-app:v7"
+  image          = "brunocampossousa/ftc3-app:latest"
   container_port = 8080
   env_vars = {
     "SPRING_DATASOURCE_PASSWORD" = {
@@ -206,11 +162,15 @@ module "java_app_replicaset" {
     },
     "SPRING_DATASOURCE_URL" = {
       name  = "SPRING_DATASOURCE_URL"
-      value = "jdbc:mysql://mysql.mysql-data.svc.cluster.local:3306/db"
+      value = "jdbc:mysql://mysql-ftc3.cnsgp0m1uiux.us-east-1.rds.amazonaws.com:3306/db"
     },
     "SPRING_DATASOURCE_USERNAME" = {
       name  = "SPRING_DATASOURCE_USERNAME"
       value = "admin"
+    },
+    "AUTH_URL" = {
+      name  = "AUTH_URL"
+      value = "https://jw1v21uqkj.execute-api.us-east-1.amazonaws.com/v1/autenticar-python"
     }
   }
   resource_limits_cpu      = "1"

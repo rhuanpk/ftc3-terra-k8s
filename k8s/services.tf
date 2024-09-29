@@ -36,26 +36,3 @@ resource "kubernetes_service" "java_app" {
     }
   }
 }
-
-resource "kubernetes_service" "mysql" {
-  metadata {
-    name      = "mysql"
-    namespace = "mysql-data"
-
-    labels = {
-      app = "mysql"
-    }
-  }
-
-  spec {
-    port {
-      name        = "mysql"
-      port        = 3306
-      target_port = "3306"
-    }
-
-    selector = {
-      app = "mysql"
-    }
-  }
-}
