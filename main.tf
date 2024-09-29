@@ -64,7 +64,6 @@ module "eks_cluster" {
   source             = "./modules/eks-cluster"
   cluster_name       = "cluster-ftc3"
   cluster_role_arn   = data.aws_iam_role.lab_role.arn
-  # cluster_role_arn   = "arn:aws:iam::438392353047:role/LabRole"
   subnet_ids         = aws_subnet.public_subnets.*.id
   kubernetes_version = "1.24"
 }
