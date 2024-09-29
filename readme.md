@@ -6,6 +6,9 @@
 
 Este repositório contém o código fonte da infraestrutura em Terraform com K8s desenvolvida para o projeto do Tech Challenge referente a pós-graduação da FIAP TECH no ano de 2024:
 
+## Arquitetura
+![Arquitetura](.assets/arquitetura.png)
+
 ## Stack utilizada
 
 **Infra:** Terraform e K8s
