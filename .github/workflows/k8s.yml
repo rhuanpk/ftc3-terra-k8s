@@ -1,0 +1,13 @@
+name: Deploy k8s By Docker Hub Trigger
+
+on:
+  repository_dispatch:
+    types:
+      - webhook
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Hello World
+        run: echo Hello World!
